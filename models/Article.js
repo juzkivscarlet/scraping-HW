@@ -10,6 +10,10 @@ const ArticleSchema = new Schema({
         type: String,
         required: true
     },
+    image: {
+        type: String,
+        required: false
+    },
     note: {
         type: Schema.Types.ObjectId,
         ref: "Note"

@@ -13,14 +13,24 @@ module.exports = app => {
 		axios.get("https://loudwire.com/").then(function(response) {
 			var $ = cheerio.load(response.data);
 			$('body').find('.blogroll-inner').children('article').each(function(i,element) {
-				let result = {};
 				let link = $(this).find('.content').children('a');
-				result.title = link.text();
-				result.link = "https://"+link.attr('href');
-				result.image = "https://"+$(this).find('a.theframe').attr('data-image');
-				
-				console.log(result);
+				let result = {
+					title: link.text(),
+					link: "https:"+link.attr('href'),
+					image: "https:"+$(this).find('a.theframe').attr('data-image')
+				};
+
+				db.Article.create(result).then(article => {
+					return console.log(article);
+				}).catch(err => {
+					return console.log(err);
+				});
 			});
+			res.send("Scrape complete");
 		});
+	});
+
+	app.get('/articles', (req,res) => {
+		db.Article.find({}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 };
