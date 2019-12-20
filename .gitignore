@@ -1,5 +1,6 @@
 node_modules/
 Images/
 
+.env
 instructions.md
 package-lock.json

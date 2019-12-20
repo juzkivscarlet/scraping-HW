@@ -17,6 +17,7 @@ module.exports = app => {
 				let result = {
 					title: link.text(),
 					link: "https:"+link.attr('href'),
+					subtitle: $(this).find('.excerpt').text(),
 					image: "https:"+$(this).find('a.theframe').attr('data-image')
 				};
 
@@ -32,5 +33,15 @@ module.exports = app => {
 
 	app.get('/articles', (req,res) => {
 		db.Article.find({}).then(article => res.json(article)).catch(err => res.json(err));
+	});
+
+	app.get('/articles/:id', (req,res) => {
+		db.Article.findOne({_id:req.params.id}).populate('note').then(article => res.json(article)).catch(err => res.json(err));
+	});
+
+	app.post("/articles/:id", (req,res) => {
+		db.Note.create(req.body).then(note => {
+			db.Article.findOneAndUpdate({_id: req.params.id}, {$set: {note: note._id}}, {new: true});
+		}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 };

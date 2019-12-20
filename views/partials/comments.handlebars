@@ -1,0 +1,52 @@
+<div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentsTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable" role="document">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h5 class="modal-title" id="commentsTitle">Comments</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<h5>Latest comment</h5>
+
+				<ul>
+					<li>Title: <span id="lastCom-title"></span></li>
+					<li>Name: <span id="lastCom-name"></span></li>
+					<li>Comment: <span id="lastCom-body"></span></li>
+				</ul>
+			</div>
+
+			<hr class="my-4">
+
+			<div class="modal-body">
+				<form>
+
+					<div class="form-group">
+						<label for="comment-title" class="col-form-label">Title: </label>
+						<input type="text" class="form-control" id="comment-title">
+					</div>
+
+					<div class="form-group">
+						<label for="comment-name" class="col-form-label">Name: </label>
+						<input type="text" class="form-control" id="comment-name">
+					</div>
+
+					<div class="form-group">
+						<label for="comment-text" class="col-form-label">Comment: </label>
+						<textarea class="form-control" id="comment-text"></textarea>
+					</div>
+					
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-sm btn-primary" id="postNote-btn">Post</button>
+			</div>
+
+		</div>
+	</div>
+</div>

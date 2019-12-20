@@ -8,7 +8,11 @@ const app = express();
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(express.static('public'));
-app.engine('handlebars', handlebars({defaultLayout:'main'}));
+app.engine('handlebars', handlebars({
+	defaultLayout:'main',
+	layoutsDir: './views/layouts/',
+	partialsDir: './views/partials/'
+}));
 app.set('view engine', 'handlebars');
 
 mongoose.connect("mongodb://localhost/scrapeit", {useNewUrlParser:true});
