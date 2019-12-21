@@ -5,6 +5,11 @@ module.exports = app => {
 	
 	const db = require('../models');
 
+	// Fix Favicon.ico routing issue
+	app.get('/favicon.ico', (req,res) => {
+		res.status(200);
+	})
+
 	app.get('/', (req,res) => {
 		res.render('index');
 	});

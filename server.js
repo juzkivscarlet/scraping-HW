@@ -1,6 +1,7 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const mongoose = require('mongoose');
+require('dotenv');
 
 const PORT = 3000;
 const app = express();
@@ -15,7 +16,7 @@ app.engine('handlebars', handlebars({
 }));
 app.set('view engine', 'handlebars');
 
-mongoose.connect("mongodb://localhost/scrapeit", {useNewUrlParser:true});
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/scrapeit", {useNewUrlParser:true});
 
 require('./controllers/router.js')(app);
 
