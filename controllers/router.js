@@ -7,7 +7,7 @@ module.exports = app => {
 
 	// Fix Favicon.ico routing issue
 	app.get('/favicon.ico', (req,res) => {
-		res.status(200);
+		res.status(204);
 	})
 
 	app.get('/', (req,res) => {
