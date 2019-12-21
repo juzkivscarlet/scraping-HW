@@ -1,6 +1,21 @@
-<h1>Loudwire articles</h1>
+<div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+        <h1 class="display-4">Loudwire articles</h1>
+        <p class="lead">
+            Links to Rock & Metal music news articles from 
+            <a href="https://www.loudwire.com/" class="font-italic" target="_blank">Loudwire.com</a>
+        </p>
+        <hr class="my-4">
 
-<div class="card-columns" id="articles"></div>
+        <button type='button' class='btn btn-md btn-primary' id='scrape-btn'>
+            Reload articles!
+        </button>
+        <br />
+        <small class="text-muted font-italic">Created by Matt Juskiw.</small>
+    </div>
+</div>
+
+<div id="articles"></div>
 
 {{>comments}}
 
