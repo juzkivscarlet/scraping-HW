@@ -27,7 +27,7 @@ module.exports = app => {
 				};
 
 				db.Article.create(result).then(article => {
-					return console.log(article);
+					return res.status(100);
 				}).catch(err => {
 					return console.log(err);
 				});
@@ -41,12 +41,14 @@ module.exports = app => {
 	});
 
 	app.get('/articles/:id', (req,res) => {
-		db.Article.findOne({_id:req.params.id}).populate('note').then(article => res.json(article)).catch(err => res.json(err));
+		db.Article.find({_id:req.params.id}).populate({
+			path: 'note'
+		}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 
 	app.post("/articles/:id", (req,res) => {
 		db.Note.create(req.body).then(note => {
-			db.Article.findOneAndUpdate({_id: req.params.id}, {$set: {note: note._id}}, {new: true});
+			db.Article.update({_id: req.params.id}, {$push: {note: note._id}}, done);
 		}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 };

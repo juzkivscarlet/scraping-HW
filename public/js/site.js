@@ -14,7 +14,6 @@ $("#postNote-btn").on('click', (e) => {
 			body: $("#comment-text").val().trim()
 		}
 	}).then(data => {
-		console.log(data);
 		$("#comment-title").val("");
 		$("#comment-name").val("");
 		$("#comment-text").val("");
@@ -29,9 +28,9 @@ $("#commentsModal").on('shown.bs.modal', (e) => {
 		url: '/articles/'+id
 	}).then(data => {
 		console.log(data);
-		$("#lastCom-title").text(data.note.title);
-		$("#lastCom-name").text(data.note.name);
-		$("#lastCom-body").text(data.note.body);
+		// $("#lastCom-title").text(data.note.title);
+		// $("#lastCom-name").text(data.note.name);
+		// $("#lastCom-body").text(data.note.body);
 	});
 });
 
