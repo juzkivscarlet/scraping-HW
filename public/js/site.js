@@ -3,21 +3,33 @@ $('#scrape-btn').on('click', () => {
 });
 
 $("#postNote-btn").on('click', (e) => {
+	e.preventDefault();
 	let id = $("#postNote-btn").attr('data-article');
 	console.log(id);
-	$.ajax({
-		method: 'POST',
-		url: '/articles/'+id,
-		data: {
-			title: $("#comment-title").val().trim(),
-			name: $("#comment-name").val().trim(),
-			body: $("#comment-text").val().trim()
-		}
-	}).then(data => {
+
+	$.post('/notes', {
+		title: $('#comment-title').val().trim(),
+		name: $('#comment-name').val().trim(),
+		body: $('#comment-text').val().trim(),
+		article: id
+	}, data => {
+		console.log(data);
 		$("#comment-title").val("");
 		$("#comment-name").val("");
 		$("#comment-text").val("");
-	})
+	});
+
+	// $.ajax({
+	// 	method: 'POST',
+	// 	url: '/articles/'+id,
+	// 	data: {
+	// 		title: $("#comment-title").val().trim(),
+	// 		name: $("#comment-name").val().trim(),
+	// 		body: $("#comment-text").val().trim(),
+	// 		article: id
+	// 	}
+	// }).then(data => {
+	// })
 });
 
 $("#commentsModal").on('shown.bs.modal', (e) => {
@@ -84,4 +96,7 @@ function saveArticle(article) {
 }
 
 // On page load
-scrapeArticles();
+$.get('/articles', data => {
+	if(data.length==0) scrapeArticles();
+	else getArticles();
+});

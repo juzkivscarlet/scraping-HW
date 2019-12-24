@@ -3,7 +3,8 @@ module.exports = app => {
 	const axios = require('axios');
 	const cheerio = require('cheerio');
 	
-	const db = require('../models');
+	const articles = require('../models/Article').article;
+	const notes = require('../models/Article').note;
 
 	// Fix Favicon.ico routing issue
 	app.get('/favicon.ico', (req,res) => {
@@ -26,7 +27,7 @@ module.exports = app => {
 					image: "https:"+$(this).find('a.theframe').attr('data-image')
 				};
 
-				db.Article.create(result).then(article => {
+				articles.create(result).then(article => {
 					return res.status(100);
 				}).catch(err => {
 					return console.log(err);
@@ -37,18 +38,26 @@ module.exports = app => {
 	});
 
 	app.get('/articles', (req,res) => {
-		db.Article.find({}).then(article => res.json(article)).catch(err => res.json(err));
+		articles.find().then(article => res.json(article)).catch(err => res.json(err));
 	});
 
 	app.get('/articles/:id', (req,res) => {
-		db.Article.find({_id:req.params.id}).populate({
+		articles.find({_id:req.params.id}).populate({
 			path: 'note'
 		}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 
-	app.post("/articles/:id", (req,res) => {
-		db.Note.create(req.body).then(note => {
-			db.Article.update({_id: req.params.id}, {$push: {note: note._id}}, done);
-		}).then(article => res.json(article)).catch(err => res.json(err));
+	app.post('/notes', (req,res) => {
+		notes.create(req.body).then(note => {
+			console.log(note);
+			articles.findOne({_id: req.body.article}).populate('note');
+			res.json(note);
+		}).catch(err => res.json(err));
 	});
+
+	// app.post("/articles/:id", (req,res) => {
+	// 	db.Note.create(req.body).then(note => {
+	// 		db.Article.findOne({_id: req.params.id}).populate('Note');
+	// 	}).then(note => res.json(note)).catch(err => res.json(err));
+	// });
 };
