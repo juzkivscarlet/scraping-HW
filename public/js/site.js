@@ -83,7 +83,7 @@ function writeArticlesToPage(articles) {
 	
 		let saveBtn = $("<button>").addClass('btn btn-sm btn-outline-primary save-btn').attr('data-article',data[i]._id).html("<span class='fas fa-save'></span>");
 		saveBtn.on('click', () => {
-			saveArticle(saveBtn.attr('data-id'));
+			saveArticle(saveBtn.attr('data-article'));
 		});
 		articleFooter.append(saveBtn);
 	
@@ -94,9 +94,38 @@ function writeArticlesToPage(articles) {
 	cardGroup.hide().slideDown(500);
 }
 
+let savedArticles = [];
+const articles = [];
+
 function saveArticle(article) {
-	console.log(article);
+	let savedArticles = [];
+	if(localStorage.getItem('savedArticles')) {
+		savedArticles = localStorage.getItem('savedArticles').split(',');
+	}
+	savedArticles.push(article);
+	localStorage.setItem('savedArticles', savedArticles.join(','));
 }
+
+function getSavedArticles(article) {
+	if(article=='done') writeArticlesToPage(articles);
+	else articles.push(article);
+}
+
+$("#viewSaved-btn").on('click', () => {
+	
+	if(localStorage.getItem('savedArticles')==null) {
+		$('#noSavedToast').toast('show');
+	} else {
+		let savedArticles = localStorage.getItem('savedArticles').split(',');
+		for(var i=0; i<savedArticles.length; i++) {
+			$.get(`/articles/${savedArticles[i]}`, article => {
+				getSavedArticles(article);
+			});
+		}
+		getSavedArticles('done')
+	}
+
+});
 
 // On page load
 $.get('/articles', data => {
