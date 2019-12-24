@@ -9,18 +9,6 @@
 				</button>
 			</div>
 
-			<div class="modal-body">
-				<h5>Latest comment</h5>
-
-				<ul>
-					<li>Title: <span id="lastCom-title"></span></li>
-					<li>Name: <span id="lastCom-name"></span></li>
-					<li>Comment: <span id="lastCom-body"></span></li>
-				</ul>
-			</div>
-
-			<hr class="my-4">
-
 			<form method="POST">
 				<div class="modal-body">
 
@@ -41,12 +29,22 @@
 					
 				</div>
 
-				<div class="modal-footer">
+				<div class='text-center'>
 					<button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-sm btn-primary" id="postNote-btn">Post</button>
+					<button type="submit" class="btn btn-sm btn-primary" id="postNote-btn">Post</button>				
 				</div>
 
 			</form>
+
+			<hr class="my-4">
+
+			<div class="modal-body">
+				<h5 class='text-center'>Comments</h5>
+
+				<div id="all-comments" class='text-left'>
+					{{!-- appended via site.js --}}
+				</div>
+			</div>
 
 		</div>
 	</div>

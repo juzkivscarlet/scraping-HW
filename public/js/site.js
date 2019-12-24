@@ -4,16 +4,12 @@ $('#scrape-btn').on('click', () => {
 
 $("#postNote-btn").on('click', (e) => {
 	e.preventDefault();
-	let id = $("#postNote-btn").attr('data-article');
-	console.log(id);
 
 	$.post('/notes', {
 		title: $('#comment-title').val().trim(),
 		name: $('#comment-name').val().trim(),
-		body: $('#comment-text').val().trim(),
-		article: id
-	}, data => {
-		console.log(data);
+		body: $('#comment-text').val().trim()
+	}, () => {
 		$("#comment-title").val("");
 		$("#comment-name").val("");
 		$("#comment-text").val("");
@@ -39,10 +35,17 @@ $("#commentsModal").on('shown.bs.modal', (e) => {
 		method: 'GET',
 		url: '/articles/'+id
 	}).then(data => {
-		console.log(data);
-		// $("#lastCom-title").text(data.note.title);
-		// $("#lastCom-name").text(data.note.name);
-		// $("#lastCom-body").text(data.note.body);
+		console.log(data.note);
+		if(data.note.length==0) {
+			$('#all-comments').append($("<p>").addClass('font-italic text-muted text-center').html('No comments yet'));
+		} else {
+			for(var i=0; i<data.note.length; i++) {
+				let list = $("<ul>");
+				list.append($('<li>').html('<strong>'+data.note[i].title+'</strong> &mdash; <span class="text-muted">'+data.note[i].name+'</span>'));
+				list.append($('<li>').html('<span class="text-muted font-italic">'+data.note[i].body+'</span>'));
+				$('#all-comments').append(list).append($('<br>'));
+			}
+		}
 	});
 });
 

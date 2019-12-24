@@ -4,7 +4,6 @@ module.exports = app => {
 	const cheerio = require('cheerio');
 	
 	const articles = require('../models/Article').article;
-	const notes = require('../models/Article').note;
 
 	// Fix Favicon.ico routing issue
 	app.get('/favicon.ico', (req,res) => {
@@ -42,17 +41,11 @@ module.exports = app => {
 	});
 
 	app.get('/articles/:id', (req,res) => {
-		articles.find({_id:req.params.id}).populate({
-			path: 'note'
-		}).then(article => res.json(article)).catch(err => res.json(err));
+		articles.findOne({_id:req.params.id}).then(article => res.json(article)).catch(err => res.json(err));
 	});
 
 	app.post('/notes', (req,res) => {
-		notes.create(req.body).then(note => {
-			console.log(note);
-			articles.findOne({_id: req.body.article}).populate('note');
-			res.json(note);
-		}).catch(err => res.json(err));
+		articles.updateOne({_id: req.body.article}, {$push: {note: req.body}}).then(note => res.json(note)).catch(err => res.json(err));
 	});
 
 	// app.post("/articles/:id", (req,res) => {

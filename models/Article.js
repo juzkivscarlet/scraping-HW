@@ -13,11 +13,6 @@ const NoteSchema = new Schema({
 	body: {
 		type: String,
 		required: false
-	},
-	article: {
-		type: Schema.Types.ObjectId,
-		ref: 'Article',
-		required: true
 	}
 });
 
@@ -38,10 +33,7 @@ const ArticleSchema = new Schema({
 		type: String,
 		required: false
 	},
-	note: [{
-		type: Schema.Types.ObjectId,
-		ref: "Note"
-	}]
+	note: [NoteSchema]
 });
 
 const Article = mongoose.model("Article", ArticleSchema);
