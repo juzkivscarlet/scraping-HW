@@ -14,18 +14,6 @@ $("#postNote-btn").on('click', (e) => {
 		$("#comment-name").val("");
 		$("#comment-text").val("");
 	});
-
-	// $.ajax({
-	// 	method: 'POST',
-	// 	url: '/articles/'+id,
-	// 	data: {
-	// 		title: $("#comment-title").val().trim(),
-	// 		name: $("#comment-name").val().trim(),
-	// 		body: $("#comment-text").val().trim(),
-	// 		article: id
-	// 	}
-	// }).then(data => {
-	// })
 });
 
 $("#commentsModal").on('shown.bs.modal', (e) => {
@@ -70,59 +58,65 @@ function writeArticlesToPage(articles) {
 	const cardGroup = $("<div>").addClass('card-columns');
 	
 	for(let i=0; i<data.length; i++) {
-		let articleCard = $("<div class='card'>").attr('data-article',data[i]._id);
-		articleCard.append($("<img class='card-img-top'>").attr('src',data[i].image).attr('alt','Article thumbnail'));
-	
-		let articleBody = $("<div class='card-body'>");
-		articleBody.append($("<h5 class='card-title'>").text(data[i].title));
-		articleBody.append($("<p class='card-text text-muted font-italic'>").text(data[i].subtitle));
-		articleBody.append($("<a>").attr('href',data[i].link).attr('target','_blank').text("Read on loudwire.com"));
-	
-		let articleFooter = $("<div class='card-footer d-flex justify-content-between'>");
-		articleFooter.append($("<button>").addClass('btn btn-sm btn-outline-primary').attr('data-toggle','modal').attr('data-target','#commentsModal').attr('data-article', data[i]._id).html("<span class='fas fa-comments'></span>"));
-	
-		let saveBtn = $("<button>").addClass('btn btn-sm btn-outline-primary save-btn').attr('data-article',data[i]._id).html("<span class='fas fa-save'></span>");
-		saveBtn.on('click', () => {
-			saveArticle(saveBtn.attr('data-article'));
-		});
-		articleFooter.append(saveBtn);
-	
-		articleCard.append(articleBody, articleFooter);
-		cardGroup.append(articleCard)
+		cardGroup.append(setSingleArticle(data[i]));
 	}
 	$("#articles").prepend($('<hr class="my-4">'), cardGroup);
 	cardGroup.hide().slideDown(500);
 }
 
-let savedArticles = [];
-const articles = [];
+function setSingleArticle(data,saved) {
+	let articleCard = $("<div class='card'>").attr('data-article',data._id);
+	articleCard.append($("<img class='card-img-top'>").attr('src',data.image).attr('alt','Article thumbnail'));
+	
+	let articleBody = $("<div class='card-body'>");
+	articleBody.append($("<h5 class='card-title'>").text(data.title));
+	articleBody.append($("<p class='card-text text-muted font-italic'>").text(data.subtitle));
+	articleBody.append($("<a>").attr('href',data.link).attr('target','_blank').text("Read on loudwire.com"));
+	
+	let articleFooter = $("<div class='card-footer d-flex justify-content-between'>");
+	articleFooter.append($("<button>").addClass('btn btn-sm btn-outline-primary').attr('data-toggle','modal').attr('data-target','#commentsModal').attr('data-article', data._id).html("<span class='fas fa-comments'></span>"));
+	
+	let saveBtn = $("<button>").addClass('btn btn-sm btn-outline-primary save-btn').attr('data-article',data._id);
+	if(saved || localStorage.getItem('savedArticles').split(',').includes(data._id)) saveBtn.html('<span class="fas fa-minus-circle"></span>').attr('data-saved',true);
+	else saveBtn.html('<span class="fas fa-save"></span>').attr('data-saved',false);
 
-function saveArticle(article) {
+	saveBtn.on('click', () => {
+		saveArticle(saveBtn.attr('data-article'), saveBtn.attr('data-saved'));
+		if(saveBtn.attr('data-saved')=='false') saveBtn.attr('data-saved',true).html('<span class="fas fa-minus-circle"></span>');
+		else saveBtn.attr('data-saved',false).html('<span class="fas fa-save"></span>');
+	});
+	articleFooter.append(saveBtn);
+	
+	articleCard.append(articleBody, articleFooter);
+	return articleCard;
+}
+
+let savedArticles = [];
+
+function saveArticle(article, saved) {
 	let savedArticles = [];
 	if(localStorage.getItem('savedArticles')) {
 		savedArticles = localStorage.getItem('savedArticles').split(',');
 	}
-	savedArticles.push(article);
-	localStorage.setItem('savedArticles', savedArticles.join(','));
-}
+	if(saved=='false') savedArticles.push(article);
+	else savedArticles.splice(savedArticles.indexOf(article), 1);
 
-function getSavedArticles(article) {
-	if(article=='done') writeArticlesToPage(articles);
-	else articles.push(article);
+	localStorage.setItem('savedArticles', savedArticles.join(','));
 }
 
 $("#viewSaved-btn").on('click', () => {
 	
-	if(localStorage.getItem('savedArticles')==null) {
-		$('#noSavedToast').toast('show');
+	if(localStorage.getItem('savedArticles')==null || localStorage.getItem('savedArticles')=='') {
+		$('#noSaved').css('display','block');
 	} else {
 		let savedArticles = localStorage.getItem('savedArticles').split(',');
+		let cardGroup = $('<div>').addClass('card-columns');
 		for(var i=0; i<savedArticles.length; i++) {
 			$.get(`/articles/${savedArticles[i]}`, article => {
-				getSavedArticles(article);
+				cardGroup.append(setSingleArticle(article,true));
 			});
 		}
-		getSavedArticles('done')
+		$('#articles').empty().prepend(cardGroup);
 	}
 
 });
