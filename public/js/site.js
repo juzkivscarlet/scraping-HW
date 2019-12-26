@@ -122,6 +122,7 @@ $("#viewSaved-btn").on('click', () => {
 });
 
 // On page load
+if(localStorage.getItem('savedArticles')==null) localStorage.setItem('savedArticles','');
 $.get('/articles', data => {
 	if(data.length==0) scrapeArticles();
 	else getArticles();
