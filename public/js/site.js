@@ -105,24 +105,35 @@ function saveArticle(article, saved) {
 }
 
 $("#viewSaved-btn").on('click', () => {
-	
-	if(localStorage.getItem('savedArticles')==null || localStorage.getItem('savedArticles')=='') {
-		$('#noSaved').css('display','block');
-	} else {
-		let savedArticles = localStorage.getItem('savedArticles').split(',');
-		let cardGroup = $('<div>').addClass('card-columns');
-		for(var i=0; i<savedArticles.length; i++) {
-			$.get(`/articles/${savedArticles[i]}`, article => {
-				cardGroup.append(setSingleArticle(article,true));
-			});
+
+	if(!viewingSaved) {
+		$('#viewSaved-btn').text('Back');
+		viewingSaved = true;
+		if(localStorage.getItem('savedArticles')==null || localStorage.getItem('savedArticles')=='') {
+			$('#noSaved').css('display','block');
+		} else {
+			let savedArticles = localStorage.getItem('savedArticles').split(',');
+			let cardGroup = $('<div>').addClass('card-columns');
+			for(var i=0; i<savedArticles.length; i++) {
+				$.get(`/articles/${savedArticles[i]}`, article => {
+					cardGroup.append(setSingleArticle(article,true));
+				});
+			}
+			$('#articles').empty().prepend(cardGroup);
 		}
-		$('#articles').empty().prepend(cardGroup);
+	} else {
+		$('#viewSaved-btn').text('Your Saved Articles');
+		viewingSaved = false;
+		$('#articles').empty();
+		getArticles();
 	}
 
 });
 
 // On page load
 if(localStorage.getItem('savedArticles')==null) localStorage.setItem('savedArticles','');
+let viewingSaved = false;
+
 $.get('/articles', data => {
 	if(data.length==0) scrapeArticles();
 	else getArticles();
